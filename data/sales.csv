@@ -1,0 +1,11 @@
+customer,product,price,quantity,region
+1001,Laptop,900,1,Milan
+1002,Mouse,25,2,Rome
+1003,Laptop,900,1,Milan
+1004,Keyboard,70,1,Naples
+1005,Mouse,25,3,Rome
+1006,Monitor,300,1,Milan
+1007,Laptop,900,2,Rome
+1008,Keyboard,70,2,Naples
+1009,Mouse,25,1,Milan
+1010,Monitor,300,2,Rome
