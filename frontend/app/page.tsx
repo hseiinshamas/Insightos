@@ -36,10 +36,38 @@ interface AnalysisResult {
       region: string;
       revenue: number;
       units_sold: number;
+      revenue_share?: number;
     }[];
 
     insights?: string[];
   };
+
+
+
+  anomalies: {
+    anomalies: {
+      type: string;
+      severity: "high" | "medium" | "low";
+      title: string;
+      entity: string;
+      message: string;
+      metric: number;
+      impact: number;
+    }[];
+    count: number;
+    status: string;
+  };
+
+
+  ai_analysis: {
+  executive_summary: string;
+  strengths: string[];
+  risks: string[];
+  opportunities: string[];
+  recommendations: string[];
+};
+
+
 }
 
 export default function Home() {
@@ -485,6 +513,416 @@ export default function Home() {
             </div>
 
 
+
+            {/* =====================================================
+    RISKS & ANOMALIES
+===================================================== */}
+
+{result.anomalies &&
+  result.anomalies.anomalies.length > 0 && (
+    <div className="mt-8 overflow-hidden rounded-3xl border border-white/[0.07] bg-[#0b0b0d]">
+
+      {/* Header */}
+
+      <div className="flex flex-col gap-5 border-b border-white/[0.06] px-7 py-7 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+
+          <div className="flex items-center gap-3">
+
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-sm">
+              ⚠️
+            </div>
+
+            <div>
+
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">
+                Automated Detection
+              </p>
+
+              <h4 className="mt-1 text-xl font-semibold tracking-tight text-white">
+                Risks & Anomalies
+              </h4>
+
+            </div>
+
+          </div>
+
+          <p className="mt-3 text-sm text-slate-500">
+            Patterns detected that may require attention.
+          </p>
+
+        </div>
+
+
+        {/* Detection count */}
+
+        <div className="w-fit shrink-0 rounded-full border border-white/[0.08] bg-white/[0.035] px-4 py-2 text-xs font-medium text-slate-400">
+
+          {result.anomalies.count} detected
+
+        </div>
+
+      </div>
+
+
+      {/* Anomaly list */}
+
+      <div className="divide-y divide-white/[0.05]">
+
+        {result.anomalies.anomalies.map(
+          (anomaly, index) => (
+
+            <div
+              key={`${anomaly.type}-${index}`}
+              className="px-7 py-7 transition duration-200 hover:bg-white/[0.02]"
+            >
+
+              <div className="flex gap-5">
+
+                {/* Severity dot */}
+
+                <div className="flex shrink-0 items-start pt-2">
+
+                  <div
+                    className={`h-2.5 w-2.5 rounded-full ${
+                      anomaly.severity === "high"
+                        ? "bg-red-400"
+                        : anomaly.severity === "medium"
+                        ? "bg-amber-400"
+                        : "bg-slate-400"
+                    }`}
+                  />
+
+                </div>
+
+
+                {/* Main content */}
+
+                <div className="min-w-0 flex-1">
+
+                  {/* Title + severity */}
+
+                  <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+
+                    <h5 className="text-base font-medium text-white">
+                      {anomaly.title}
+                    </h5>
+
+                    <span
+                      className={`inline-flex w-fit shrink-0 items-center rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${
+                        anomaly.severity === "high"
+                          ? "border border-red-400/20 bg-red-400/10 text-red-300"
+                          : anomaly.severity === "medium"
+                          ? "border border-amber-400/20 bg-amber-400/10 text-amber-300"
+                          : "border border-white/10 bg-white/[0.04] text-slate-400"
+                      }`}
+                    >
+                      {anomaly.severity}
+                    </span>
+
+                  </div>
+
+
+                  {/* Description */}
+
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
+                    {anomaly.message}
+                  </p>
+
+
+                  {/* Metadata */}
+
+                  <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+
+                    {/* Entity */}
+
+                    <div className="flex w-fit items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-2.5">
+
+                      <span className="text-xs font-medium text-slate-600">
+                        Entity
+                      </span>
+
+                      <span className="max-w-[220px] truncate text-xs font-medium text-slate-300">
+                        {anomaly.entity}
+                      </span>
+
+                    </div>
+
+
+                    {/* Impact */}
+
+                    <div className="flex w-fit items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-2.5">
+
+                      <span className="text-xs font-medium text-slate-600">
+                        Impact
+                      </span>
+
+                      <span className="text-xs font-medium text-slate-300">
+                        {anomaly.impact}
+                        {anomaly.type.includes("concentration") ||
+                        anomaly.type.includes("mismatch")
+                          ? "%"
+                          : ""}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          )
+        )}
+
+      </div>
+
+    </div>
+  )}
+
+
+
+  {/* =====================================================
+    AI ANALYST
+===================================================== */}
+
+{result.ai_analysis && (
+  <div className="mt-8 overflow-hidden rounded-3xl border border-indigo-400/[0.12] bg-[#0b0b0d]">
+
+    {/* Header */}
+
+    <div className="border-b border-white/[0.06] px-7 py-7">
+
+      <div className="flex items-center gap-3">
+
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-indigo-400/20 bg-indigo-400/10 text-lg">
+          ✦
+        </div>
+
+        <div>
+
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-indigo-300/60">
+            Automated Business Analysis
+          </p>
+
+          <h4 className="mt-1 text-xl font-semibold tracking-tight text-white">
+            AI Analyst
+          </h4>
+
+        </div>
+
+      </div>
+
+      {/* Executive summary */}
+
+      <div className="mt-6 rounded-2xl border border-white/[0.06] bg-white/[0.025] p-5">
+
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+          Executive Summary
+        </p>
+
+        <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-300">
+          {result.ai_analysis.executive_summary}
+        </p>
+
+      </div>
+
+    </div>
+
+
+    {/* Analysis sections */}
+
+    <div className="grid gap-px bg-white/[0.05] md:grid-cols-3">
+
+      {/* Strengths */}
+
+      <div className="bg-[#0b0b0d] p-7">
+
+        <div className="flex items-center gap-2">
+
+          <span className="text-sm">
+            ↗
+          </span>
+
+          <h5 className="text-sm font-medium text-white">
+            Strengths
+          </h5>
+
+        </div>
+
+        <div className="mt-5 space-y-3">
+
+          {result.ai_analysis.strengths.length > 0 ? (
+            result.ai_analysis.strengths.map(
+              (item, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl border border-white/[0.05] bg-white/[0.02] p-4"
+                >
+                  <p className="text-sm leading-6 text-slate-400">
+                    {item}
+                  </p>
+                </div>
+              )
+            )
+          ) : (
+            <p className="text-sm text-slate-600">
+              No major strengths identified.
+            </p>
+          )}
+
+        </div>
+
+      </div>
+
+
+      {/* Risks */}
+
+      <div className="bg-[#0b0b0d] p-7">
+
+        <div className="flex items-center gap-2">
+
+          <span className="text-sm">
+            ⚠
+          </span>
+
+          <h5 className="text-sm font-medium text-white">
+            Risks
+          </h5>
+
+        </div>
+
+        <div className="mt-5 space-y-3">
+
+          {result.ai_analysis.risks.length > 0 ? (
+            result.ai_analysis.risks.map(
+              (item, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl border border-red-400/[0.08] bg-red-400/[0.025] p-4"
+                >
+                  <p className="text-sm leading-6 text-slate-400">
+                    {item}
+                  </p>
+                </div>
+              )
+            )
+          ) : (
+            <p className="text-sm text-slate-600">
+              No major risks identified.
+            </p>
+          )}
+
+        </div>
+
+      </div>
+
+
+      {/* Opportunities */}
+
+      <div className="bg-[#0b0b0d] p-7">
+
+        <div className="flex items-center gap-2">
+
+          <span className="text-sm">
+            ✦
+          </span>
+
+          <h5 className="text-sm font-medium text-white">
+            Opportunities
+          </h5>
+
+        </div>
+
+        <div className="mt-5 space-y-3">
+
+          {result.ai_analysis.opportunities.length > 0 ? (
+            result.ai_analysis.opportunities.map(
+              (item, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl border border-indigo-400/[0.08] bg-indigo-400/[0.025] p-4"
+                >
+                  <p className="text-sm leading-6 text-slate-400">
+                    {item}
+                  </p>
+                </div>
+              )
+            )
+          ) : (
+            <p className="text-sm text-slate-600">
+              No major opportunities identified.
+            </p>
+          )}
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    {/* Recommendations */}
+
+    <div className="border-t border-white/[0.06] px-7 py-7">
+
+      <div className="flex items-center gap-3">
+
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.07] bg-white/[0.03] text-sm">
+          →
+        </div>
+
+        <div>
+
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+            Recommended Actions
+          </p>
+
+          <h5 className="mt-1 text-base font-medium text-white">
+            What should happen next?
+          </h5>
+
+        </div>
+
+      </div>
+
+
+      <div className="mt-5 grid gap-3">
+
+        {result.ai_analysis.recommendations.map(
+          (recommendation, index) => (
+
+            <div
+              key={index}
+              className="flex gap-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
+            >
+
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[11px] font-medium text-slate-400">
+                {index + 1}
+              </div>
+
+              <p className="text-sm leading-6 text-slate-400">
+                {recommendation}
+              </p>
+
+            </div>
+
+          )
+        )}
+
+      </div>
+
+    </div>
+
+  </div>
+)}
+
+
+  
             {/* =================================================
                 AI INSIGHTS
             ================================================= */}
@@ -631,6 +1069,8 @@ function KpiCard({
 
   );
 }
+
+
 
 
 /* ===========================================================

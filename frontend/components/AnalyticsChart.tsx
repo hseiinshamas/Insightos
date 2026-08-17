@@ -30,16 +30,15 @@ export default function AnalyticsChart({
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/[0.07] bg-[#0b0b0d]">
 
-      {/* Background glow */}
-      <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-white/[0.025] blur-3xl" />
+      {/* Subtle glow */}
+
+      <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-indigo-500/[0.05] blur-3xl" />
 
       <div className="relative">
 
-        {/* =====================================================
-            HEADER
-        ===================================================== */}
+        {/* Header */}
 
-        <div className="flex items-start justify-between border-b border-white/[0.06] px-7 py-6">
+        <div className="flex items-start justify-between px-7 pt-7">
 
           <div>
 
@@ -47,65 +46,63 @@ export default function AnalyticsChart({
               Performance
             </p>
 
-            <h3 className="mt-2 text-xl font-semibold tracking-tight text-white">
+            <h3 className="mt-2 text-lg font-semibold tracking-tight text-white">
               {title}
             </h3>
 
             {subtitle && (
-              <p className="mt-1.5 text-sm text-slate-600">
+              <p className="mt-1.5 text-sm text-slate-500">
                 {subtitle}
               </p>
             )}
 
           </div>
 
-
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.035] text-sm text-slate-500">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.025] text-slate-500 transition duration-200 group-hover:border-white/[0.12] group-hover:text-slate-300">
             ↗
           </div>
 
         </div>
 
 
-        {/* =====================================================
-            CHART
-        ===================================================== */}
+        {/* Chart */}
 
-        <div className="px-3 pb-4 pt-2">
+        <div className="px-3 pb-4 pt-3">
 
           <Plot
             data={[
               {
                 x: data.labels,
                 y: data.values,
-
                 type: "bar",
 
-                // Important:
-                // Use a dark transparent-looking bar instead
-                // of making the entire plot white.
-
                 marker: {
-                  color: "#e5e7eb",
+                  color: "rgba(129, 140, 248, 0.75)",
 
                   line: {
                     width: 0,
                   },
 
-                  opacity: 0.9,
                 },
 
                 hovertemplate:
-                  `<b>%{x}</b><br />${valuePrefix}%{y:,.2f}<extra></extra>`,
+                  `<b>%{x}</b><br>` +
+                  `<span style="color:#a5b4fc">●</span> ` +
+                  `${valuePrefix}%{y:,.2f}` +
+                  `<extra></extra>`,
 
                 hoverlabel: {
-                  bgcolor: "#18181b",
-                  bordercolor: "#3f3f46",
+                  bgcolor: "#111113",
+                  bordercolor: "#27272a",
 
                   font: {
                     color: "#ffffff",
                     size: 13,
+                    family:
+                      "Inter, ui-sans-serif, system-ui, sans-serif",
                   },
+
+                  align: "left",
                 },
               },
             ]}
@@ -113,33 +110,24 @@ export default function AnalyticsChart({
             layout={{
               autosize: true,
 
-              height: 470,
+              height: 390,
 
               margin: {
-                l: 70,
-                r: 35,
+                l: 55,
+                r: 20,
                 t: 25,
-                b: 85,
+                b: 70,
               },
 
-              // THESE ARE IMPORTANT
-              // They prevent Plotly from creating
-              // a white chart background.
-
               paper_bgcolor: "rgba(0,0,0,0)",
+
               plot_bgcolor: "rgba(0,0,0,0)",
 
               font: {
                 color: "#64748b",
-
                 family:
-                  "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+                  "Inter, ui-sans-serif, system-ui, sans-serif",
               },
-
-
-              // =================================================
-              // X AXIS
-              // =================================================
 
               xaxis: {
 
@@ -149,29 +137,23 @@ export default function AnalyticsChart({
 
                 showline: false,
 
-                automargin: true,
-
                 tickfont: {
-                  size: 12,
+                  size: 11,
                   color: "#64748b",
                 },
 
-                tickangle: 0,
+                tickangle: -25,
 
                 fixedrange: true,
 
               },
 
-
-              // =================================================
-              // Y AXIS
-              // =================================================
-
               yaxis: {
 
                 showgrid: true,
 
-                gridcolor: "rgba(255,255,255,0.055)",
+                gridcolor:
+                  "rgba(255,255,255,0.045)",
 
                 gridwidth: 1,
 
@@ -179,10 +161,8 @@ export default function AnalyticsChart({
 
                 showline: false,
 
-                automargin: true,
-
                 tickfont: {
-                  size: 11,
+                  size: 10,
                   color: "#52525b",
                 },
 
@@ -192,30 +172,11 @@ export default function AnalyticsChart({
 
               },
 
-
-              // =================================================
-              // BAR SPACING
-              // =================================================
-
-              bargap: 0.35,
-
-              bargroupgap: 0.1,
-
-
-              // =================================================
-              // HOVER
-              // =================================================
+              bargap: 0.42,
 
               hovermode: "closest",
 
-              hoverdistance: 20,
-
-
-              // =================================================
-              // REMOVE LEGEND
-              // =================================================
-
-              showlegend: false,
+              hoverdistance: 30,
 
             }}
 
@@ -228,13 +189,10 @@ export default function AnalyticsChart({
 
               doubleClick: false,
 
-              displaylogo: false,
-
             }}
 
             style={{
               width: "100%",
-              height: "470px",
             }}
           />
 

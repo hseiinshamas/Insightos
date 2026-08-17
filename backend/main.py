@@ -5,7 +5,8 @@ from io import BytesIO
 from services.kpi_engine import calculate_kpis
 from services.analytics_engine import calculate_analytics 
 from services.data_profiler import profile_dataframe
-
+from services.anomaly_detection import detect_anomalies
+from services.ai_analysis import generate_ai_analysis
 
 app = FastAPI(
     title="InsightOS API",
@@ -47,10 +48,18 @@ async def analyze_dataset(file: UploadFile = File(...)):
     profile = profile_dataframe(df)
     kpis = calculate_kpis(df)
     analytics = calculate_analytics(df)
+    anomalies = detect_anomalies(df)
+    ai_analysis = generate_ai_analysis(
+        kpis,
+        analytics,
+        anomalies
+    )
 
     return {
         "filename": file.filename,
         "profile": profile,
         "kpis": kpis,
-        "analytics": analytics
+        "analytics": analytics,
+        "anomalies": anomalies,
+         "ai_analysis": ai_analysis
     }
